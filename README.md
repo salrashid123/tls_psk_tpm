@@ -45,6 +45,7 @@ For reference, see
 
 - [In PSK TLS, how is the key used for encryption derived?](https://security.stackexchange.com/questions/81597/in-psk-tls-how-is-the-key-used-for-encryption-derived)
 - [TLS, Pre-Master Secrets and Master Secrets](https://www.cryptologie.net/article/340/tls-pre-master-secrets-and-master-secrets/)
+- [TLS 1.3 Performance Part 3 – Pre-Shared Key (PSK)](https://www.wolfssl.com/tls-1-3-performance-part-3-pre-shared-key-psk/)
 
 ---
 
