@@ -243,7 +243,7 @@ calculated PSK: ea674cf330c02b827c7254cd89d1fbf5971e17e9d0b68f5dc9002b5680908a77
 ```
 
 ```bash
-(env) srashid@srashid12:~/Desktop/psk_tpm/golang$ go run client/client.go 
+$ go run client/client.go 
 Client's hint: Client1 
 client: e486c873c14b2655e426b71f78f4bfa9c584821184b718f5b38abf8e 
 server: 051379b26ed0f6cfe90192e500a9d211432cd1f29675dcfb158c2efc 
@@ -315,6 +315,11 @@ see [RFC 4297: Pre-Shared Key Ciphersuites for Transport Layer Security (TLS)](h
    containing the length of the PSK (in octets), and the PSK itself.
 ```
 
+#### TLS1.3 Preemptive TPM-HMAC
+
+One thing to note that in TLS1.3, the server preemptively generates the PSK per standard protocol (eg it generates the master secret right after the `ClientHello`, [ref](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/).  
+
+The implication of pre-emptive master secret generation is that for every inbound clienthello, the server calls a new TPM-HMAC call which is costly.
 
 #### Trace
 
