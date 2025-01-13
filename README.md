@@ -46,6 +46,7 @@ For reference, see
 - [In PSK TLS, how is the key used for encryption derived?](https://security.stackexchange.com/questions/81597/in-psk-tls-how-is-the-key-used-for-encryption-derived)
 - [TLS, Pre-Master Secrets and Master Secrets](https://www.cryptologie.net/article/340/tls-pre-master-secrets-and-master-secrets/)
 - [TLS 1.3 Performance Part 3 – Pre-Shared Key (PSK)](https://www.wolfssl.com/tls-1-3-performance-part-3-pre-shared-key-psk/)
+- [EMV support for TLS-PSK](https://datatracker.ietf.org/doc/html/draft-urien-tls-psk-emv-02)
 
 ---
 
@@ -150,7 +151,7 @@ Note,  you can also securely transfer an HMAC key between system via the duplica
 #### Python
 
 For the python example, we need a way to surface details of the TLS handshake. Specifically, we need the `client.random` and `server.random` (eg [OpenSSL.SSL.Connection.client_random](https://www.pyopenssl.org/en/17.1.0/api/ssl.html#OpenSSL.SSL.Connection.client_random)
-)).  These values are made available via [pyopenssl-psk](https://github.com/gesslerpd/pyopenssl-psk/tree/master)
+)).  These values are made available via [pyopenssl-psk](https://github.com/gesslerpd/pyopenssl-psk/tree/master) and for `TLS1.2`.
 
 We will also need `python3.13+` because that is the version that has TLS-PSK callbacks
 
@@ -320,6 +321,14 @@ see [RFC 4297: Pre-Shared Key Ciphersuites for Transport Layer Security (TLS)](h
 One thing to note that in TLS1.3, the server preemptively generates the PSK per standard protocol (eg it generates the master secret right after the `ClientHello`, [ref](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/).  
 
 The implication of pre-emptive master secret generation is that for every inbound clienthello, the server calls a new TPM-HMAC call which is costly.
+
+#### TLS1.3 server-random during PSK callback
+
+While this repro demonstrates a protocol only with TLS1.2 with go and dtls, using the server and client random during PSK generation is not prohibited by the RFC.
+
+Unfortunately, several language implementations do not surface the server/client random values within the PSK callback.
+
+Furthermore, for openssl and `TLS1.3`  the `server_random` value is not initialized at the moment (see [issue #26404](https://github.com/openssl/openssl/issues/26404))
 
 #### Trace
 
