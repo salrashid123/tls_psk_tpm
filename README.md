@@ -1,8 +1,8 @@
-## Per-Session TLS-PSK using Trusted Platform Module (TPM)
+## Per-Session TLS1.2-PSK using Trusted Platform Module (TPM)
 
-This repo demonstrates a variation of [TLS-PSK](https://en.wikipedia.org/wiki/TLS-PSK) where the actual PSK is embedded inside a `Trusted Platform Module (TPM)`
+This repo demonstrates a variation of [TLS-PSK](https://en.wikipedia.org/wiki/TLS-PSK) for `TLS1.2` where the actual PSK is embedded inside a `Trusted Platform Module (TPM)`
 
-`TLS-PSK` relies on a shared secret between the participants where the secret provides the basis to drive keys used to establish the TLS connection.
+[TLS-PSK](https://datatracker.ietf.org/doc/html/rfc4279) relies on a shared secret between the participants where the secret provides the basis to drive keys used to establish the TLS connection.
 
 Normally, the PSK is a long term secret and is eventually visible in user-space (i.,e the application) during connection setup.  This poses a risk because, you know, it can get misplaced at a bar or stolen.
 
@@ -38,8 +38,11 @@ The items in green below describes the `per_session PSK` generation and the chan
 
 ![images/sequence.png](images/sequence.png)
 
+![images/psk_key_exchange.png](images/psk_key_exchange.png)
+
 >>> **WARNING** this has not been reviewed or used in practice;  this is just a random idea and isn't 'out of the box' compatible with programming languages implementing TLS-PSK (because you have to derive a new key using client and server random); caveat emptor
 
+**Important**: this scheme does not work for `TLS1.3` because that revision requires [TLS1.3 PSK Binder](https://datatracker.ietf.org/doc/html/rfc8446#section-4.2.11.2)' in the protocol 
 
 For reference, see
 
@@ -48,14 +51,21 @@ For reference, see
 - [TLS 1.3 Performance Part 3 – Pre-Shared Key (PSK)](https://www.wolfssl.com/tls-1-3-performance-part-3-pre-shared-key-psk/)
 - [EMV support for TLS-PSK](https://datatracker.ietf.org/doc/html/draft-urien-tls-psk-emv-02)
 
+- [RFC 9258: Importing External Pre-Shared Keys (PSKs) for TLS 1.3](https://www.rfc-editor.org/rfc/rfc9258.html)
+- [Overview	of	TLS v1.3](https://owasp.org/www-chapter-london/assets/slides/OWASPLondon20180125_TLSv1.3_Andy_Brodie.pdf)
+
 ---
 
 One additional advantage of using PSK over RSA/EC PKI-based TLS is that its allegedly "quantum safe" (see [rfc8773 3. Motivation and Design Rationale](https://datatracker.ietf.org/doc/rfc8773/)), [issue#6379](https://github.com/golang/go/issues/6379#issuecomment-2166924693)
 
 
-Other References:
+### TLS1.3 PSK
 
-for [TLS 1.3](https://datatracker.ietf.org/doc/html/rfc8446): 
+As mentioned, this repo works just with TLS1.2 since [TLS 1.3](https://datatracker.ietf.org/doc/html/rfc8446) requires the clientHello to include a binder which itself is a hash of the final PSK:
+
+Given that the scheme above requires both the client and server randoms to generate the per-session PSK, the binder cannot get setup so this whole repo does not apply to TLS 1.3
+
+Other references: 
 
 * [TLS1.3 PSK](https://wiki.openssl.org/index.php/TLS1.3#PSKs)
 * [Guidance for External Pre-Shared Key (PSK) Usage in TLS](https://datatracker.ietf.org/doc/html/rfc9257)
