@@ -21,6 +21,7 @@ Each TLS session uses a new `per-session PSK` which is generated on the spot ide
 ```bash
 tpm_key = tpm2_load(permanent_psk)
 
+## i'm just using HMAC here but ideally, this should be a KDF 
 per_session_psk = TPM_HMAC(tpm_key, "pre master secret" + client_random + server_random)
 
 ## rest of standard TLS protocol for PSK
